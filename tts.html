@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>firts</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;1,100;1,400;1,600&display=swap" rel="stylesheet">
+<script src='https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js'></script>
+</head>
+<body>
+    <div class="header">
+    <div class="container">         
+    <div class ="navbar">
+        <div class = "logo">
+            <img src ="logo.jpg" width = "80px">
+        </div>
+        <nav>
+            <ul>
+                <li><a href ="file:///D:/implimentation/web.html">HOME</a></li>
+                <li><a href ="tts.html">CONVERT IMAGE INTO TEXT</a></li>
+                <li><a href ="ocr.html">CONVERT IMAGE INTO AUDIO</a></li>
+                <li><a href ="manual.html">MANUAL</a></li>
+                <li><a href =""></a></li>
+
+            </ul>
+        </nav>
+    
+    </div>  
+    <div class="row">
+        <img src="" id="image_preview" />
+    <br />
+  Result: <pre id="result"></pre>
+        <div class="col-2">
+            <h1>  DROP THE FILE LOCATION  TO CONVERT INTO AUDIO</h1>
+            <div class="file">
+                <input type="file" id="uploader" onchange="readFile(this)" />
+                <br />
+                Result: <pre id="result"></pre>
+           
+            </div>
+            <script>
+                const recognizeText = async ({ target: { files } }) => {
+                  const { createWorker } = Tesseract;
+          
+                  const worker = createWorker();
+                  await worker.load();
+                  await worker.loadLanguage('eng');
+                  await worker.initialize('eng');
+                  await worker.setParameters({
+                    tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,',
+                  });
+          
+                  const {
+                    data: { text },
+                  } = await worker.recognize(files[0], "eng", {
+                    corePath: "node_modules/tesseract.js-core/tesseract-core.wasm.js"
+                  });
+          
+                  const message = text.replace(/\n|\r/g, " ");
+                  const speech = new SpeechSynthesisUtterance(message);
+          
+                  document.getElementById("result").innerText = message;
+          
+                  window.speechSynthesis.speak(speech);
+          
+                  await worker.terminate();
+                };
+          
+                const uploader = document.getElementById("uploader");
+          
+                uploader.addEventListener("change", recognizeText);
+          
+                function readFile(input) {
+                  if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+          
+                    reader.onload = function (e) {
+                      document.getElementById("image_preview").setAttribute("src", e.target.result);
+                    };
+          
+                    // Read the contents of File object
+                    reader.readAsDataURL(input.files[0]);
+                  }
+                }
+              </script>
+            
+        
+        </div>
+            <div class="col-2">
+                <img src = "book.jpg">
+            </div>
+    
+    </div>
+</div>
+</div>
+<div class = "footer-content">
+    <h5 >TUNE-IN AUDIO</h5>
+    <p>This website is created by students of acropolis Indore</p>
+    <ul class ="socials">
+        <li><a href= "#">facebook</i></a></li>
+        <li><a href= "#">Instagram</i></a></li>
+        <li><a href= "#"></i>G-mail</a></li>
+        <li><a href= "#">Phone</i></a></li>
+    
+       
+    </ul>
+</div>
+</body>
